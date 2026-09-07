@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
@@ -25,11 +26,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// View Engine (EJS)
+// Static Files (supports standard and serverless process.cwd)
+const publicPath = fs.existsSync(path.join(process.cwd(), 'public'))
+  ? path.join(process.cwd(), 'public')
+  : path.join(__dirname, 'public');
+app.use(express.static(publicPath));
+
+// View Engine (supports standard and serverless process.cwd)
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+const viewsPath = fs.existsSync(path.join(process.cwd(), 'views'))
+  ? path.join(process.cwd(), 'views')
+  : path.join(__dirname, 'views');
+app.set('views', viewsPath);
 
 // Health check endpoint (Phase 1 spec)
 app.get('/api/health', (req, res) => {
@@ -47,35 +56,30 @@ let dbPromise = null;
 async function ensureDatabase() {
   if (!dbPromise) {
     dbPromise = (async () => {
-      const sequelize = await initDatabase();
-      initModels(sequelize);
-      await sequelize.sync({ alter: false });
-
-      // Auto-seed on first deployment if empty
       try {
-        const { models } = require('./models');
-        const count = await models.Exercise.count();
-        if (count === 0) {
-          console.log('Database empty on first boot. Running automated seed...');
-          const { seedDatabase } = require('./seed/seedExercises');
-          await seedDatabase();
-        }
-      } catch (seedErr) {
-        console.warn('Auto-seed check notice:', seedErr.message);
+        const sequelize = await initDatabase();
+        initModels(sequelize);
+        await sequelize.sync({ alter: false });
+        return sequelize;
+      } catch (err) {
+        console.error('Database connection error:', err.message);
+        throw err;
       }
-      return sequelize;
     })();
   }
   return dbPromise;
 }
 
-// Ensure DB is initialized before handling requests
+// Ensure DB is initialized before handling requests (bypass static assets)
 app.use(async (req, res, next) => {
+  if (req.path.startsWith('/css') || req.path.startsWith('/js') || req.path === '/favicon.ico') {
+    return next();
+  }
   try {
     await ensureDatabase();
     next();
   } catch (err) {
-    console.error('Database connection error:', err);
+    console.error('Database connection error in request:', err);
     next(err);
   }
 });

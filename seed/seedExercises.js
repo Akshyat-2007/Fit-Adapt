@@ -276,7 +276,7 @@ async function seedDatabase() {
     const models = initModels(sequelize);
 
     // Synchronize schema
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: false });
     console.log('✓ Database schema synchronized successfully.');
 
     // Re-seed Exercises with updated verified links
