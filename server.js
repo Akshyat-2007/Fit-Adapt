@@ -17,6 +17,7 @@ const workoutRoutes = require('./routes/workoutRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
+const cronRoutes = require('./routes/cronRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -92,6 +93,7 @@ app.use('/api/workout', workoutRoutes);
 app.use('/api/session', sessionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/exercises', exerciseRoutes);
+app.use('/api/cron', cronRoutes);
 
 // Page View Routes
 app.get('/', optionalAuth, (req, res) => {

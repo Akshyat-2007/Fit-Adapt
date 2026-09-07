@@ -10,5 +10,11 @@
       "source": "/(.*)",
       "destination": "/api/index.js"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/daily-pacing",
+      "schedule": "0 0 * * *"
+    }
   ]
 }
