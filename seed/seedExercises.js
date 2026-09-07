@@ -356,10 +356,15 @@ async function seedDatabase() {
     }
 
     console.log('✓ Database re-seeding completed successfully.');
-    process.exit(0);
+    if (require.main === module) {
+      process.exit(0);
+    }
   } catch (err) {
     console.error('Seeding failed:', err);
-    process.exit(1);
+    if (require.main === module) {
+      process.exit(1);
+    }
+    throw err;
   }
 }
 

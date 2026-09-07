@@ -42,6 +42,44 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Database Initialization (Serverless & Persistent Compatible)
+let dbPromise = null;
+async function ensureDatabase() {
+  if (!dbPromise) {
+    dbPromise = (async () => {
+      const sequelize = await initDatabase();
+      initModels(sequelize);
+      await sequelize.sync({ alter: false });
+
+      // Auto-seed on first deployment if empty
+      try {
+        const { models } = require('./models');
+        const count = await models.Exercise.count();
+        if (count === 0) {
+          console.log('Database empty on first boot. Running automated seed...');
+          const { seedDatabase } = require('./seed/seedExercises');
+          await seedDatabase();
+        }
+      } catch (seedErr) {
+        console.warn('Auto-seed check notice:', seedErr.message);
+      }
+      return sequelize;
+    })();
+  }
+  return dbPromise;
+}
+
+// Ensure DB is initialized before handling requests
+app.use(async (req, res, next) => {
+  try {
+    await ensureDatabase();
+    next();
+  } catch (err) {
+    console.error('Database connection error:', err);
+    next(err);
+  }
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
@@ -106,9 +144,7 @@ app.use((err, req, res, next) => {
 // Start Server & Sync DB
 async function startServer() {
   try {
-    const sequelize = await initDatabase();
-    initModels(sequelize);
-    await sequelize.sync({ alter: false });
+    await ensureDatabase();
 
     app.listen(PORT, () => {
       console.log(`====================================================`);
