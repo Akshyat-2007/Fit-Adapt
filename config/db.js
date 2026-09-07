@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
+const mysql2 = require('mysql2');
 const path = require('path');
 
 let sequelize = null;
@@ -23,6 +24,7 @@ async function initDatabase() {
       console.log('Connecting to Cloud MySQL via DATABASE_URL...');
       sequelize = new Sequelize(DATABASE_URL, {
         dialect: 'mysql',
+        dialectModule: mysql2,
         logging: false,
         dialectOptions: {
           ssl: {
@@ -43,6 +45,7 @@ async function initDatabase() {
         host: DB_HOST,
         port: DB_PORT,
         dialect: 'mysql',
+        dialectModule: mysql2,
         logging: false,
         dialectOptions: {
           ssl: {

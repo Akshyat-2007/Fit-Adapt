@@ -142,7 +142,7 @@ app.use((err, req, res, next) => {
   if (req.originalUrl.startsWith('/api/')) {
     return res.status(500).json({ success: false, error: 'Internal server error: ' + err.message });
   }
-  res.status(500).send('An unexpected error occurred. Please refresh or try again.');
+  res.status(500).send(`An error occurred: ${err.message}. Please refresh or try again.`);
 });
 
 // Start Server & Sync DB
