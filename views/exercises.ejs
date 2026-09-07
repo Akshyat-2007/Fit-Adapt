@@ -1,0 +1,246 @@
+<%- include('partials/header', { title: 'Condition-Safe Exercise Library' }) %>
+<%- include('partials/nav', { activeNav: 'exercises' }) %>
+
+<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-8">
+  
+  <!-- Header & Search -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-gray-800 pb-6">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Clinical Exercise Catalog</span>
+        <span id="matchCountBadge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+          Loading...
+        </span>
+      </div>
+      <h1 class="text-3xl font-black text-gray-900 dark:text-white mt-1">Condition-Safe Exercise Library</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400">All routines are tagged with clinical condition boundaries, intensity thresholds, and verified technique guides.</p>
+    </div>
+
+    <!-- Search input -->
+    <div class="relative w-full md:w-80">
+      <input type="text" id="searchInput" oninput="filterExercises()" placeholder="Search by name, muscle, or symptom..." class="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none shadow-sm">
+      <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5"></i>
+    </div>
+  </div>
+
+  <!-- Filter Controls Section -->
+  <div class="space-y-3 bg-white dark:bg-gray-800 p-5 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm">
+    
+    <!-- Filter by Condition -->
+    <div class="flex flex-wrap items-center gap-2 text-xs">
+      <span class="font-bold text-gray-500 dark:text-gray-400 uppercase text-[10px] min-w-[70px]">Condition:</span>
+      <button onclick="setConditionFilter('')" class="condition-btn px-3 py-1.5 rounded-xl border border-brand-600 bg-brand-600 text-white font-semibold transition" data-condition="">All Conditions</button>
+      <button onclick="setConditionFilter('asthma')" class="condition-btn px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-semibold hover:border-brand-500 transition" data-condition="asthma">Asthma Safe</button>
+      <button onclick="setConditionFilter('joint')" class="condition-btn px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-semibold hover:border-brand-500 transition" data-condition="joint">Joint / Arthritis Safe</button>
+      <button onclick="setConditionFilter('pcos')" class="condition-btn px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-semibold hover:border-brand-500 transition" data-condition="pcos">PCOS Friendly</button>
+      <button onclick="setConditionFilter('postnatal')" class="condition-btn px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-semibold hover:border-brand-500 transition" data-condition="postnatal">Postnatal Safe</button>
+      <button onclick="setConditionFilter('anxiety_fatigue')" class="condition-btn px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-semibold hover:border-brand-500 transition" data-condition="anxiety_fatigue">Fatigue & Pacing Safe</button>
+    </div>
+
+    <!-- Filter by Intensity -->
+    <div class="flex flex-wrap items-center gap-2 text-xs pt-1 border-t border-gray-100 dark:border-gray-700/60">
+      <span class="font-bold text-gray-500 dark:text-gray-400 uppercase text-[10px] min-w-[70px]">Intensity:</span>
+      <button onclick="setIntensityFilter('')" class="intensity-btn px-3 py-1 rounded-xl border border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold transition" data-intensity="">All Tiers</button>
+      <button onclick="setIntensityFilter('low')" class="intensity-btn px-3 py-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-medium hover:border-cyan-500 transition" data-intensity="low">Gentle / Low (Restorative)</button>
+      <button onclick="setIntensityFilter('moderate')" class="intensity-btn px-3 py-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-medium hover:border-emerald-500 transition" data-intensity="moderate">Moderate</button>
+      <button onclick="setIntensityFilter('high')" class="intensity-btn px-3 py-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-medium hover:border-rose-500 transition" data-intensity="high">High (Control / Excluded)</button>
+    </div>
+
+  </div>
+
+  <!-- Exercise Card Grid -->
+  <div id="exerciseGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Populated by JavaScript -->
+  </div>
+
+</main>
+
+<script>
+  let allExercises = [];
+  let currentCondition = '';
+  let currentIntensity = '';
+
+  // Parse YouTube video ID and construct clean watch & embed links
+  function parseYouTubeUrl(url) {
+    if (!url) return { embed: '', watch: '' };
+    let id = '';
+    if (url.includes('/embed/')) {
+      id = url.split('/embed/')[1].split('?')[0];
+    } else if (url.includes('watch?v=')) {
+      id = url.split('watch?v=')[1].split('&')[0];
+    } else if (url.includes('youtu.be/')) {
+      id = url.split('youtu.be/')[1].split('?')[0];
+    }
+    if (id) {
+      return {
+        embed: `https://www.youtube.com/embed/${id}`,
+        watch: `https://www.youtube.com/watch?v=${id}`
+      };
+    }
+    return { embed: url, watch: url };
+  }
+
+  async function fetchExercises() {
+    try {
+      const res = await fetch('/api/exercises');
+      const data = await res.json();
+      if (data.success) {
+        allExercises = data.exercises;
+        filterExercises();
+      }
+    } catch (e) {
+      console.error(e);
+      showToast('Error loading exercises', 'error');
+    }
+  }
+
+  function setConditionFilter(cond) {
+    currentCondition = cond;
+    document.querySelectorAll('.condition-btn').forEach(btn => {
+      if (btn.dataset.condition === cond) {
+        btn.className = 'condition-btn px-3 py-1.5 rounded-xl border border-brand-600 bg-brand-600 text-white font-semibold transition';
+      } else {
+        btn.className = 'condition-btn px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-semibold hover:border-brand-500 transition';
+      }
+    });
+    filterExercises();
+  }
+
+  function setIntensityFilter(intensity) {
+    currentIntensity = intensity;
+    document.querySelectorAll('.intensity-btn').forEach(btn => {
+      if (btn.dataset.intensity === intensity) {
+        btn.className = 'intensity-btn px-3 py-1 rounded-xl border border-gray-900 dark:border-white bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold transition';
+      } else {
+        btn.className = 'intensity-btn px-3 py-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 font-medium hover:border-brand-500 transition';
+      }
+    });
+    filterExercises();
+  }
+
+  function filterExercises() {
+    const search = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    const filtered = allExercises.filter(ex => {
+      // Condition filter
+      if (currentCondition === 'asthma' && !ex.safe_for_asthma) return false;
+      if (currentCondition === 'joint' && !ex.safe_for_joint) return false;
+      if (currentCondition === 'pcos' && !ex.safe_for_pcos) return false;
+      if (currentCondition === 'postnatal' && !ex.safe_for_postnatal) return false;
+      if (currentCondition === 'anxiety_fatigue' && !ex.safe_for_anxiety_fatigue) return false;
+
+      // Intensity filter
+      if (currentIntensity && ex.intensity !== currentIntensity) return false;
+
+      // Search filter
+      if (search) {
+        const matchName = ex.name.toLowerCase().includes(search);
+        const matchDesc = ex.description && ex.description.toLowerCase().includes(search);
+        const matchMuscle = ex.target_muscle && ex.target_muscle.toLowerCase().includes(search);
+        return matchName || matchDesc || matchMuscle;
+      }
+
+      return true;
+    });
+
+    document.getElementById('matchCountBadge').innerText = `${filtered.length} of ${allExercises.length} movements`;
+    renderCards(filtered);
+  }
+
+  function renderCards(exercises) {
+    const grid = document.getElementById('exerciseGrid');
+    grid.innerHTML = '';
+
+    if (exercises.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-full py-16 text-center space-y-3 bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 p-8">
+          <div class="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto text-gray-400">
+            <i data-lucide="filter-x" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-bold text-gray-800 dark:text-gray-200">No matching exercises found</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Try adjusting your condition safety or intensity filters.</p>
+        </div>
+      `;
+      lucide.createIcons();
+      return;
+    }
+
+    exercises.forEach(ex => {
+      const card = document.createElement('div');
+      card.className = 'bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg hover:border-brand-300 dark:hover:border-brand-600 transition-all p-6 flex flex-col justify-between space-y-4 group';
+
+      let badgeColor = 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950/50 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800/60';
+      if (ex.intensity === 'moderate') {
+        badgeColor = 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60';
+      } else if (ex.intensity === 'high') {
+        badgeColor = 'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300 border-rose-200 dark:border-rose-800/60';
+      }
+
+      // Safety tags
+      const tags = [];
+      if (ex.safe_for_asthma) tags.push('Asthma Safe');
+      if (ex.safe_for_joint) tags.push('Joint Safe');
+      if (ex.safe_for_pcos) tags.push('PCOS Safe');
+      if (ex.safe_for_postnatal) tags.push('Postnatal');
+      if (ex.safe_for_anxiety_fatigue) tags.push('Fatigue Pacing');
+
+      const tagPills = tags.map(t => `<span class="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700/60 text-gray-600 dark:text-gray-300">${t}</span>`).join(' ');
+
+      const { embed, watch } = parseYouTubeUrl(ex.video_url);
+
+      card.innerHTML = `
+        <div class="space-y-3">
+          <!-- Top Row: Intensity & Muscle Group -->
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-extrabold px-2.5 py-1 rounded-xl border ${badgeColor} uppercase tracking-wider">
+              ${ex.intensity} intensity
+            </span>
+            <span class="text-xs font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 px-2.5 py-0.5 rounded-lg">
+              ${ex.target_muscle || 'Full Body'}
+            </span>
+          </div>
+
+          <!-- Title & Description -->
+          <div>
+            <h3 class="text-lg font-black text-gray-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+              ${ex.name}
+            </h3>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mt-1.5 leading-relaxed">
+              ${ex.description}
+            </p>
+          </div>
+
+          <!-- Condition Safety Pills -->
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            ${tagPills || '<span class="text-[10px] text-rose-500 font-semibold">High strain • Rule Engine Excluded</span>'}
+          </div>
+        </div>
+
+        <!-- Action Links: Modal Demo & Direct External YouTube Link -->
+        <div class="pt-4 border-t border-gray-100 dark:border-gray-700/80 flex items-center justify-between gap-2">
+          
+          <!-- Watch in Modal Button -->
+          <button onclick="openVideoModal('${embed}', '${ex.name.replace(/'/g, "\\'")}', '${ex.description.replace(/'/g, "\\'")}')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+            <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+            <span>Watch Demo</span>
+          </button>
+
+          <!-- Direct YouTube Link Button -->
+          <a href="${watch}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-650 text-gray-700 dark:text-gray-200 text-xs font-semibold transition flex items-center gap-1.5" title="Open directly in YouTube">
+            <i data-lucide="external-link" class="w-3.5 h-3.5 text-red-500"></i>
+            <span>YouTube</span>
+          </a>
+
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    lucide.createIcons();
+  }
+
+  fetchExercises();
+</script>
+
+<%- include('partials/footer') %>

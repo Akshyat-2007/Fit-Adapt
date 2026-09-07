@@ -1,0 +1,191 @@
+<%- include('partials/header', { title: 'FitAdapt — Invisible Disability Fitness Companion' }) %>
+<%- include('partials/nav', { activeNav: 'home' }) %>
+
+<main class="flex-grow">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28">
+    <div class="absolute inset-0 -z-10 opacity-30 dark:opacity-20 pointer-events-none">
+      <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-brand-400 blur-3xl"></div>
+      <div class="absolute top-60 -left-20 w-80 h-80 rounded-full bg-emerald-400 blur-3xl"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto space-y-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+          <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+          Adaptive Fitness & Health Companion
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+          Fitness Calibrated for <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-500 to-purple-600">Invisible Disabilities</span>
+        </h1>
+
+        <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+          Most fitness platforms assume a uniform, able-bodied user. FitAdapt adapts session intensity daily based on your real-time symptoms, protecting you from flare-ups while building lasting consistency.
+        </p>
+
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="/signup" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2">
+            <span>Get Started Free</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="/login" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold border border-gray-300 dark:border-gray-700 shadow-sm transition flex items-center justify-center gap-2">
+            <i data-lucide="log-in" class="w-4 h-4 text-brand-500"></i>
+            <span>Log In to Account</span>
+          </a>
+        </div>
+
+        <div class="pt-2 text-xs text-gray-500 dark:text-gray-400">
+          ✓ No aggressive streak penalties &nbsp;•&nbsp; ✓ Explainable rule engine &nbsp;•&nbsp; ✓ 100% Condition-safe
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem vs Solution (Section 1 of spec) -->
+  <section id="problem" class="py-16 bg-white dark:bg-gray-800/60 border-y border-gray-200 dark:border-gray-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">The Reality</h2>
+        <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">Conventional Apps vs FitAdapt</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Generic Fitness App Flaw -->
+        <div class="p-6 sm:p-8 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40">
+          <div class="flex items-center gap-3 text-rose-700 dark:text-rose-400 mb-4">
+            <div class="p-2.5 rounded-xl bg-rose-100 dark:bg-rose-900/50">
+              <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold">Standard Fitness Apps</h3>
+          </div>
+          <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="x" class="w-4 h-4 text-rose-500 mt-0.5 shrink-0"></i>
+              <span>Pushes fixed, aggressive high-intensity targets regardless of health fluctuations.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="x" class="w-4 h-4 text-rose-500 mt-0.5 shrink-0"></i>
+              <span>Guilt-inducing streak resets that treat flare-ups as personal failures.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="x" class="w-4 h-4 text-rose-500 mt-0.5 shrink-0"></i>
+              <span>Recommends exercises that cause bronchospasms, joint flare-ups, or pelvic floor strain.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- FitAdapt Solution -->
+        <div class="p-6 sm:p-8 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40">
+          <div class="flex items-center gap-3 text-emerald-700 dark:text-emerald-400 mb-4">
+            <div class="p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-900/50">
+              <i data-lucide="check-circle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold">FitAdapt Companion</h3>
+          </div>
+          <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
+              <span><strong>Symptom-Aware Calibrator:</strong> Energy, pain, breathlessness, & flare checks dial down intensity in real time.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
+              <span><strong>Compassionate Consistency:</strong> Rest and flare days are counted toward consistency rather than penalized.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0"></i>
+              <span><strong>Condition Safety Filtering:</strong> Every movement is pre-screened for your unique medical profile.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Condition Profiles (Section 3 of spec) -->
+  <section id="conditions" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Target Conditions</h2>
+        <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">Built for Non-Visible Health Conditions</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Asthma -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-300 flex items-center justify-center mb-4">
+            <i data-lucide="wind" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Asthma & Respiratory</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Pursed-lip breathing integration, steady pacing, and exclusion of sudden high-ventilation triggers.</p>
+        </div>
+
+        <!-- Joint/Arthritis -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-300 flex items-center justify-center mb-4">
+            <i data-lucide="bone" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Joint & Arthritis</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Low-impact kinematics, zero axial spinal shock, and mobility work that lubricates synovial joints.</p>
+        </div>
+
+        <!-- PCOS -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300 flex items-center justify-center mb-4">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">PCOS & Hormonal</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Insulin-sensitizing resistance training without triggering chronic cortisol elevations.</p>
+        </div>
+
+        <!-- Postnatal -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-300 flex items-center justify-center mb-4">
+            <i data-lucide="baby" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Postnatal Recovery</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Safe diastasis recti and pelvic floor rehabilitation exercises without intra-abdominal strain.</p>
+        </div>
+
+        <!-- Anxiety / Fatigue -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 flex items-center justify-center mb-4">
+            <i data-lucide="moon-star" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Anxiety-Linked Fatigue</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Somatic grounding, progressive muscle release, and restorative pacing to avoid post-exertional crashes.</p>
+        </div>
+
+        <!-- Custom / Other -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-300 flex items-center justify-center mb-4">
+            <i data-lucide="sliders" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Multi-Condition / Other</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Custom notes and severity ratings allow safe cross-condition exercise selection tailored to you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="py-16 bg-gradient-to-r from-brand-700 to-indigo-800 text-white">
+    <div class="max-w-5xl mx-auto px-4 text-center space-y-6">
+      <h2 class="text-3xl sm:text-4xl font-extrabold">Start Your Condition-Adapted Journey</h2>
+      <p class="text-brand-100 max-w-xl mx-auto">
+        Create your personal health profile in under a minute and let FitAdapt calibrate safe, restorative fitness tailored specifically to your body.
+      </p>
+      <div class="pt-2 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/signup" class="px-8 py-3.5 rounded-xl bg-white text-brand-900 font-bold hover:bg-brand-50 shadow-lg transition flex items-center justify-center gap-2">
+          <span>Create Free Profile</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+        <a href="/login" class="px-8 py-3.5 rounded-xl bg-brand-900/60 border border-brand-400/40 text-white font-semibold hover:bg-brand-900 transition flex items-center justify-center">
+          Sign In
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

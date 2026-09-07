@@ -1,0 +1,280 @@
+<%- include('partials/header', { title: 'Consistency Dashboard' }) %>
+<%- include('partials/nav', { activeNav: 'dashboard' }) %>
+
+<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-8">
+  
+  <!-- Top Welcome & Status Banner -->
+  <div class="bg-gradient-to-r from-brand-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="space-y-1">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm">
+        <i data-lucide="shield-heart" class="w-3.5 h-3.5 text-emerald-300"></i>
+        <span>Condition-First Pacing Active</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black tracking-tight">Consistency Dashboard</h1>
+      <p class="text-brand-100 text-xs sm:text-sm max-w-xl">
+        FitAdapt measures health through gentle consistency. Flare and rest days are celebrated as wise listening, not broken streaks.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <a href="/checkin" class="px-5 py-3 rounded-xl bg-white text-brand-900 font-bold text-xs sm:text-sm hover:bg-brand-50 shadow-md transition flex items-center gap-2">
+        <i data-lucide="clipboard-check" class="w-4 h-4 text-brand-600"></i>
+        <span>Daily Check-in</span>
+      </a>
+      <a href="/workout" class="px-5 py-3 rounded-xl bg-brand-800/80 border border-brand-400/40 text-white font-bold text-xs sm:text-sm hover:bg-brand-900 transition flex items-center gap-2">
+        <i data-lucide="dumbbell" class="w-4 h-4 text-amber-300"></i>
+        <span>Today's Routine</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Metric Cards Row (Phase 6 spec: total days, good vs flare days, streak) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    
+    <!-- Streak -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4">
+      <div class="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-500 flex items-center justify-center shrink-0">
+        <i data-lucide="flame" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Current Streak</p>
+        <h3 id="statStreak" class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-0.5">-</h3>
+        <p class="text-[11px] text-gray-400 font-medium">Consecutive logged days</p>
+      </div>
+    </div>
+
+    <!-- Total Days Logged -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4">
+      <div class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950/50 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
+        <i data-lucide="calendar" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Days Logged</p>
+        <h3 id="statTotalDays" class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-0.5">-</h3>
+        <p class="text-[11px] text-gray-400 font-medium">Total symptom check-ins</p>
+      </div>
+    </div>
+
+    <!-- Good Days (flare_flag = false) -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4">
+      <div class="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+        <i data-lucide="sun" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Good Days</p>
+        <h3 id="statGoodDays" class="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">-</h3>
+        <p id="statGoodPct" class="text-[11px] text-gray-400 font-medium">- of all logged days</p>
+      </div>
+    </div>
+
+    <!-- Flare Days (flare_flag = true) -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-4">
+      <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-500 flex items-center justify-center shrink-0">
+        <i data-lucide="shield-alert" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Flare / Rest Days</p>
+        <h3 id="statFlareDays" class="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400 mt-0.5">-</h3>
+        <p class="text-[11px] text-gray-400 font-medium">Paced with rest/recovery</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Consistency Calendar Heatmap (14-Day Visual Matrix) -->
+  <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-700 shadow-lg space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 dark:border-gray-700 pb-4">
+      <div>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <i data-lucide="grid" class="w-5 h-5 text-brand-500"></i>
+          <span>14-Day Consistency & Flare Activity Matrix</span>
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Chronological daily view of check-in status, symptom states, and session completions.</p>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Good Day</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-500"></span> Flare Day</span>
+        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-gray-200 dark:bg-gray-700"></span> No Log</span>
+      </div>
+    </div>
+
+    <!-- Visual Heatmap Grid -->
+    <div id="heatmapGrid" class="grid grid-cols-2 sm:grid-cols-7 lg:grid-cols-14 gap-3">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Profile & Recent Logs Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- User Condition Profile Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-gray-900 dark:text-white text-base flex items-center gap-2">
+          <i data-lucide="heart" class="w-4 h-4 text-rose-500"></i>
+          <span>Active Safety Profile</span>
+        </h3>
+        <a href="/onboarding" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline">Edit</a>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm">
+        <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-700/40 space-y-1">
+          <span class="text-[11px] font-bold uppercase text-gray-400 block">Condition Category</span>
+          <p id="profCondition" class="font-bold text-gray-800 dark:text-gray-200 capitalize">-</p>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-700/40 space-y-1">
+          <span class="text-[11px] font-bold uppercase text-gray-400 block">Severity Threshold</span>
+          <p id="profSeverity" class="font-bold text-gray-800 dark:text-gray-200 capitalize">-</p>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-700/40 space-y-1">
+          <span class="text-[11px] font-bold uppercase text-gray-400 block">Clinical / Pacing Notes</span>
+          <p id="profNotes" class="text-xs text-gray-600 dark:text-gray-300 italic">-</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Symptom Logs Table (2 cols on lg) -->
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-gray-900 dark:text-white text-base flex items-center gap-2">
+          <i data-lucide="history" class="w-4 h-4 text-brand-500"></i>
+          <span>Recent Symptom History</span>
+        </h3>
+        <span class="text-xs text-gray-400">Last 7 Check-ins</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-gray-100 dark:border-gray-700 text-gray-400 uppercase font-semibold">
+              <th class="py-2.5 px-3">Date</th>
+              <th class="py-2.5 px-3">Energy</th>
+              <th class="py-2.5 px-3">Pain</th>
+              <th class="py-2.5 px-3">Breath</th>
+              <th class="py-2.5 px-3">Flare</th>
+              <th class="py-2.5 px-3 text-right">Workout</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody" class="divide-y divide-gray-100 dark:divide-gray-700/50">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+  async function loadDashboard() {
+    try {
+      const res = await fetch('/api/dashboard');
+      const data = await res.json();
+
+      if (!data.success) {
+        showToast('Failed to load dashboard data', 'error');
+        return;
+      }
+
+      const stats = data.stats;
+
+      // Fill metric counters
+      document.getElementById('statStreak').innerText = stats.streak + ' ' + (stats.streak === 1 ? 'day' : 'days');
+      document.getElementById('statTotalDays').innerText = stats.totalDays;
+      document.getElementById('statGoodDays').innerText = stats.goodDays;
+      document.getElementById('statGoodPct').innerText = stats.goodDaysPercentage + '% good day ratio';
+      document.getElementById('statFlareDays').innerText = stats.flareDays;
+
+      // Condition profile card
+      if (stats.conditionProfile) {
+        document.getElementById('profCondition').innerText = stats.conditionProfile.condition_type.replace('_', ' ');
+        document.getElementById('profSeverity').innerText = stats.conditionProfile.severity;
+        document.getElementById('profNotes').innerText = stats.conditionProfile.notes || 'No specific clinical triggers noted.';
+      }
+
+      // Render 14-day heatmap
+      const grid = document.getElementById('heatmapGrid');
+      grid.innerHTML = '';
+
+      stats.recentActivity.forEach(day => {
+        const item = document.createElement('div');
+        
+        let statusBg = 'bg-gray-100 dark:bg-gray-700/60 border-gray-200 dark:border-gray-700';
+        let statusDot = 'bg-gray-300 dark:bg-gray-600';
+        let statusText = 'No log';
+
+        if (day.hasCheckin) {
+          if (day.flare) {
+            statusBg = 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60';
+            statusDot = 'bg-rose-500';
+            statusText = 'Flare day';
+          } else {
+            statusBg = 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900/60';
+            statusDot = 'bg-emerald-500';
+            statusText = 'Good day';
+          }
+        }
+
+        const isTodayRing = day.isToday ? 'ring-2 ring-brand-500 ring-offset-2 dark:ring-offset-gray-800' : '';
+
+        item.className = `p-3 rounded-2xl border ${statusBg} ${isTodayRing} flex flex-col items-center justify-between text-center gap-1.5 transition`;
+        item.innerHTML = `
+          <span class="text-[10px] uppercase font-bold text-gray-400">${day.dayName}</span>
+          <span class="text-xs font-extrabold text-gray-800 dark:text-gray-200">${day.dayNumber}</span>
+          <div class="w-3 h-3 rounded-full ${statusDot}" title="${statusText}"></div>
+          <span class="text-[9px] font-medium text-gray-500 dark:text-gray-400">${day.completed ? '✓ Done' : (day.hasCheckin ? 'Paced' : '-')}</span>
+        `;
+
+        grid.appendChild(item);
+      });
+
+      // Render recent history rows
+      const tbody = document.getElementById('historyTableBody');
+      tbody.innerHTML = '';
+
+      // Filter activity that has checkin
+      const loggedDays = stats.recentActivity.filter(a => a.hasCheckin).slice(-7).reverse();
+
+      if (loggedDays.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-gray-400">No check-in history yet. Check in above!</td></tr>';
+      } else {
+        loggedDays.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-750 transition';
+
+          const flareBadge = row.flare 
+            ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 font-bold text-[10px]">Flare</span>'
+            : '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold text-[10px]">Good</span>';
+
+          const compBadge = row.completed 
+            ? '<span class="text-emerald-600 font-bold">✓ Completed</span>'
+            : '<span class="text-gray-400 font-medium">Paced</span>';
+
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-semibold text-gray-800 dark:text-gray-200">${row.date}</td>
+            <td class="py-2.5 px-3 font-medium text-gray-600 dark:text-gray-300">${row.energy}/5</td>
+            <td class="py-2.5 px-3 font-medium text-gray-600 dark:text-gray-300">${row.pain}/5</td>
+            <td class="py-2.5 px-3 font-medium text-gray-600 dark:text-gray-300">${row.breathlessness}/5</td>
+            <td class="py-2.5 px-3">${flareBadge}</td>
+            <td class="py-2.5 px-3 text-right">${compBadge}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      lucide.createIcons();
+    } catch (e) {
+      console.error(e);
+      showToast('Error displaying dashboard', 'error');
+    }
+  }
+
+  loadDashboard();
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,199 @@
+<%- include('partials/header', { title: 'Condition Safety Profile' }) %>
+<%- include('partials/nav', { activeNav: 'profile' }) %>
+
+<main class="flex-grow max-w-3xl mx-auto px-4 sm:px-6 py-10 w-full">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-10 border border-gray-200 dark:border-gray-700 shadow-xl space-y-8">
+    
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
+        <i data-lucide="shield-check" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Your Health Condition Profile</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">The Adaptive Workout Engine uses this baseline to enforce clinical exercise exclusions.</p>
+      </div>
+    </div>
+
+    <form id="profileForm" onsubmit="saveProfile(event)" class="space-y-6">
+      
+      <!-- Condition Type Picker Cards -->
+      <div class="space-y-3">
+        <label class="block text-sm font-bold text-gray-900 dark:text-white">Select Primary Condition Profile</label>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="conditionCards">
+          
+          <label class="condition-card relative p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 hover:border-brand-400 cursor-pointer transition flex items-start gap-3">
+            <input type="radio" name="condition_type" value="asthma" class="mt-1 text-brand-600 focus:ring-brand-500">
+            <div>
+              <p class="condition-title text-sm font-bold text-gray-900 dark:text-white">Asthma & Respiratory</p>
+              <p class="condition-desc text-xs text-gray-500 dark:text-gray-400">Excludes explosive hyperventilation; embeds diaphragmatic pacing.</p>
+            </div>
+          </label>
+
+          <label class="condition-card relative p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 hover:border-brand-400 cursor-pointer transition flex items-start gap-3">
+            <input type="radio" name="condition_type" value="joint" class="mt-1 text-brand-600 focus:ring-brand-500">
+            <div>
+              <p class="condition-title text-sm font-bold text-gray-900 dark:text-white">Joint / Arthritis / Hypermobility</p>
+              <p class="condition-desc text-xs text-gray-500 dark:text-gray-400">Zero high-impact jumps; emphasizes joint stabilization and control.</p>
+            </div>
+          </label>
+
+          <label class="condition-card relative p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 hover:border-brand-400 cursor-pointer transition flex items-start gap-3">
+            <input type="radio" name="condition_type" value="pcos" class="mt-1 text-brand-600 focus:ring-brand-500">
+            <div>
+              <p class="condition-title text-sm font-bold text-gray-900 dark:text-white">PCOS & Hormonal</p>
+              <p class="condition-desc text-xs text-gray-500 dark:text-gray-400">Insulin-sensitizing strength routines without adrenal cortisol spikes.</p>
+            </div>
+          </label>
+
+          <label class="condition-card relative p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 hover:border-brand-400 cursor-pointer transition flex items-start gap-3">
+            <input type="radio" name="condition_type" value="postnatal" class="mt-1 text-brand-600 focus:ring-brand-500">
+            <div>
+              <p class="condition-title text-sm font-bold text-gray-900 dark:text-white">Postnatal Recovery</p>
+              <p class="condition-desc text-xs text-gray-500 dark:text-gray-400">Protects healing pelvic floor & heals diastasis recti safely.</p>
+            </div>
+          </label>
+
+          <label class="condition-card relative p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 hover:border-brand-400 cursor-pointer transition flex items-start gap-3">
+            <input type="radio" name="condition_type" value="anxiety_fatigue" class="mt-1 text-brand-600 focus:ring-brand-500">
+            <div>
+              <p class="condition-title text-sm font-bold text-gray-900 dark:text-white">Anxiety / Chronic Fatigue</p>
+              <p class="condition-desc text-xs text-gray-500 dark:text-gray-400">Regulates sympathetic nervous system; prevents post-exertional crash.</p>
+            </div>
+          </label>
+
+          <label class="condition-card relative p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 hover:border-brand-400 cursor-pointer transition flex items-start gap-3">
+            <input type="radio" name="condition_type" value="other" class="mt-1 text-brand-600 focus:ring-brand-500">
+            <div>
+              <p class="condition-title text-sm font-bold text-gray-900 dark:text-white">Other / Multiple</p>
+              <p class="condition-desc text-xs text-gray-500 dark:text-gray-400">Broad adaptive safety tags and conservative default limits.</p>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Severity Rating -->
+      <div class="space-y-3">
+        <label class="block text-sm font-bold text-gray-900 dark:text-white">Condition Severity</label>
+        <div class="grid grid-cols-3 gap-3">
+          <label class="severity-option p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition">
+            <input type="radio" name="severity" value="mild" class="sr-only">
+            <span class="severity-title block text-xs font-bold text-gray-900 dark:text-white">Mild</span>
+            <span class="severity-sub block text-[11px] text-gray-500 dark:text-gray-400">Occasional symptoms</span>
+          </label>
+          <label class="severity-option p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition">
+            <input type="radio" name="severity" value="moderate" class="sr-only">
+            <span class="severity-title block text-xs font-bold text-gray-900 dark:text-white">Moderate</span>
+            <span class="severity-sub block text-[11px] text-gray-500 dark:text-gray-400">Daily management</span>
+          </label>
+          <label class="severity-option p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition">
+            <input type="radio" name="severity" value="significant" class="sr-only">
+            <span class="severity-title block text-xs font-bold text-gray-900 dark:text-white">Significant</span>
+            <span class="severity-sub block text-[11px] text-gray-500 dark:text-gray-400">Conservative pacing</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Clinical / Personal Notes -->
+      <div class="space-y-2">
+        <label for="notes" class="block text-sm font-bold text-gray-900 dark:text-white">Personal Flare Triggers & Preferences</label>
+        <textarea id="notes" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none" placeholder="Note down any specific joints affected, weather sensitivities, or physician advice..."></textarea>
+      </div>
+
+      <div class="pt-4 flex flex-col sm:flex-row gap-3">
+        <button type="submit" id="saveBtn" class="flex-1 py-3.5 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md shadow-brand-600/30 transition flex items-center justify-center gap-2">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          <span>Save Profile Settings</span>
+        </button>
+        <a href="/checkin" class="py-3.5 px-6 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold text-sm text-center transition">
+          Proceed to Check-in
+        </a>
+      </div>
+
+    </form>
+  </div>
+</main>
+
+<script>
+  // Load current profile on mount
+  async function loadProfile() {
+    try {
+      const res = await fetch('/api/profile');
+      const data = await res.json();
+      if (data.success && data.user && data.user.conditionProfile) {
+        const cp = data.user.conditionProfile;
+        
+        // Select condition radio
+        const cRadio = document.querySelector(`input[name="condition_type"][value="${cp.condition_type}"]`);
+        if (cRadio) {
+          cRadio.checked = true;
+          highlightSelectedCards();
+        }
+
+        // Select severity radio
+        const sRadio = document.querySelector(`input[name="severity"][value="${cp.severity}"]`);
+        if (sRadio) {
+          sRadio.checked = true;
+          highlightSelectedSeverity();
+        }
+
+        if (cp.notes) {
+          document.getElementById('notes').value = cp.notes;
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function highlightSelectedCards() {
+    document.querySelectorAll('.condition-card').forEach(card => {
+      const radio = card.querySelector('input[type="radio"]');
+      const isChecked = Boolean(radio && radio.checked);
+      card.classList.toggle('is-selected', isChecked);
+    });
+  }
+
+  function highlightSelectedSeverity() {
+    document.querySelectorAll('.severity-option').forEach(opt => {
+      const radio = opt.querySelector('input[type="radio"]');
+      const isChecked = Boolean(radio && radio.checked);
+      opt.classList.toggle('is-selected', isChecked);
+    });
+  }
+
+  document.querySelectorAll('input[name="condition_type"]').forEach(r => {
+    r.addEventListener('change', highlightSelectedCards);
+  });
+  document.querySelectorAll('input[name="severity"]').forEach(r => {
+    r.addEventListener('change', highlightSelectedSeverity);
+  });
+
+  async function saveProfile(e) {
+    e.preventDefault();
+    const condition_type = document.querySelector('input[name="condition_type"]:checked')?.value || 'other';
+    const severity = document.querySelector('input[name="severity"]:checked')?.value || 'mild';
+    const notes = document.getElementById('notes').value.trim();
+
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ condition_type, severity, notes })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Condition profile updated successfully!', 'success');
+      } else {
+        showToast(data.error || 'Failed to update profile', 'error');
+      }
+    } catch (err) {
+      showToast('Error saving profile', 'error');
+    }
+  }
+
+  loadProfile();
+</script>
+
+<%- include('partials/footer') %>

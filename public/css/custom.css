@@ -1,0 +1,179 @@
+/* FitAdapt Custom Utilities */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Custom range sliders */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.dark input[type="range"] {
+  background: #334155;
+}
+
+/* Webkit slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #6366f1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  border: 2px solid #ffffff;
+}
+
+.dark input[type="range"]::-webkit-slider-thumb {
+  border-color: #1e293b;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+}
+
+/* Firefox slider thumb */
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #6366f1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+  transition: transform 0.15s ease, background 0.15s ease;
+  border: 2px solid #ffffff;
+}
+
+/* Accent Color Variations for Thumbs */
+.slider-emerald::-webkit-slider-thumb {
+  background: #10b981 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.45);
+}
+.slider-emerald::-moz-range-thumb {
+  background: #10b981 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.45);
+}
+
+.slider-rose::-webkit-slider-thumb {
+  background: #f43f5e !important;
+  box-shadow: 0 2px 8px rgba(244, 63, 94, 0.45);
+}
+.slider-rose::-moz-range-thumb {
+  background: #f43f5e !important;
+  box-shadow: 0 2px 8px rgba(244, 63, 94, 0.45);
+}
+
+.slider-cyan::-webkit-slider-thumb {
+  background: #06b6d4 !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.45);
+}
+.slider-cyan::-moz-range-thumb {
+  background: #06b6d4 !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.45);
+}
+
+/* Mathematical 1,2,3,4,5 Slider Step Alignment Container */
+.slider-steps-track {
+  position: relative;
+  width: calc(100% - 22px);
+  margin-left: 11px;
+  margin-right: 11px;
+}
+
+/* ================================================================
+   High-Contrast Card & Option States (WCAG AAA Compliant)
+   ================================================================ */
+
+/* Severity Option Cards */
+.severity-option {
+  transition: all 0.2s ease;
+}
+
+.severity-option.is-selected {
+  border-color: #4f46e5 !important;
+  background-color: #e0e7ff !important;
+  box-shadow: 0 0 0 2px #4f46e5 !important;
+}
+.severity-option.is-selected .severity-title {
+  color: #1e1b4b !important;
+}
+.severity-option.is-selected .severity-sub {
+  color: #3730a3 !important;
+}
+
+.dark .severity-option.is-selected {
+  border-color: #818cf8 !important;
+  background-color: #1e1b4b !important;
+  box-shadow: 0 0 0 2px #818cf8 !important;
+}
+.dark .severity-option.is-selected .severity-title {
+  color: #ffffff !important;
+}
+.dark .severity-option.is-selected .severity-sub {
+  color: #c7d2fe !important;
+}
+.severity-option.is-selected:hover {
+  background-color: #dbeafe !important;
+}
+.dark .severity-option.is-selected:hover {
+  background-color: #242060 !important;
+}
+
+/* Condition Cards */
+.condition-card {
+  transition: all 0.2s ease;
+}
+
+.condition-card.is-selected {
+  border-color: #4f46e5 !important;
+  background-color: #eef2ff !important;
+  box-shadow: 0 0 0 2px #4f46e5 !important;
+}
+.condition-card.is-selected .condition-title {
+  color: #1e1b4b !important;
+}
+.condition-card.is-selected .condition-desc {
+  color: #3730a3 !important;
+}
+
+.dark .condition-card.is-selected {
+  border-color: #818cf8 !important;
+  background-color: #1e1b4b !important;
+  box-shadow: 0 0 0 2px #818cf8 !important;
+}
+.dark .condition-card.is-selected .condition-title {
+  color: #ffffff !important;
+}
+.dark .condition-card.is-selected .condition-desc {
+  color: #c7d2fe !important;
+}
+.condition-card.is-selected:hover {
+  background-color: #e0e7ff !important;
+}
+.dark .condition-card.is-selected:hover {
+  background-color: #242060 !important;
+}
+
+.condition-card input[type="radio"],
+.severity-option input[type="radio"] {
+  accent-color: #4f46e5;
+}
+.dark .condition-card input[type="radio"],
+.dark .severity-option input[type="radio"] {
+  accent-color: #818cf8;
+}
+
