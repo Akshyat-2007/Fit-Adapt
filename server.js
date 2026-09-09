@@ -64,6 +64,7 @@ async function ensureDatabase() {
         return sequelize;
       } catch (err) {
         console.error('Database connection error:', err.message);
+        dbPromise = null; // Reset so next request retries
         throw err;
       }
     })();
@@ -144,7 +145,47 @@ app.use((err, req, res, next) => {
   if (req.originalUrl.startsWith('/api/')) {
     return res.status(500).json({ success: false, error: 'Internal server error: ' + err.message });
   }
-  res.status(500).send(`An error occurred: ${err.message}. Please refresh or try again.`);
+
+  const isDnsError = err.message && (err.message.includes('ENOTFOUND') || err.message.includes('ECONNREFUSED'));
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8"><title>FitAdapt — Database Service Alert</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-6 font-sans">
+      <div class="max-w-xl w-full bg-gray-800 border border-gray-700 rounded-3xl p-8 shadow-2xl space-y-6 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto text-3xl">
+          ⚠️
+        </div>
+        <div class="space-y-2">
+          <h1 class="text-2xl font-black text-white">Database Service Unavailable</h1>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            The web server is running, but cannot connect to your cloud MySQL database.
+          </p>
+        </div>
+        <div class="p-4 rounded-2xl bg-gray-900/80 border border-gray-700/60 text-left space-y-2">
+          <p class="text-xs font-bold uppercase tracking-wider text-rose-400">Technical Diagnostic:</p>
+          <code class="text-xs text-rose-300 font-mono block break-all">${err.message}</code>
+        </div>
+        ${isDnsError ? `
+        <div class="p-4 rounded-2xl bg-brand-950/40 border border-indigo-800 text-left space-y-2 text-xs text-indigo-200">
+          <p class="font-bold text-white">💡 How to fix this in 1 minute:</p>
+          <ol class="list-decimal pl-4 space-y-1 text-indigo-300">
+            <li>Open <a href="https://console.aiven.io" target="_blank" class="text-indigo-400 underline font-semibold">console.aiven.io</a> and check your MySQL service status.</li>
+            <li>If it says <b>"POWERED OFF"</b> or <b>"PAUSED"</b>, click <b>"Power on"</b> / <b>"Resume"</b>.</li>
+            <li>If you created a new service, update <code>DB_HOST</code> and <code>DB_PASSWORD</code> in your Vercel project settings.</li>
+          </ol>
+        </div>` : ''}
+        <button onclick="window.location.reload()" class="w-full py-3 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition">
+          Retry Connection
+        </button>
+      </div>
+    </body>
+    </html>
+  `;
+  res.status(500).send(html);
 });
 
 // Start Server & Sync DB
