@@ -48,6 +48,7 @@ app.get('/api/health', (req, res) => {
     app: 'FitAdapt',
     sih: 'SIH26196',
     databaseDialect: getDialect(),
+    databaseProvider: (process.env.DB_HOST && process.env.DB_HOST.includes('tidbcloud')) ? 'TiDB Cloud Serverless' : 'Cloud MySQL',
     timestamp: new Date().toISOString()
   });
 });
