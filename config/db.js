@@ -16,9 +16,9 @@ async function initDatabase() {
   const DB_PASSWORD = process.env.DB_PASSWORD || '';
   const DB_NAME = process.env.DB_NAME || 'defaultdb';
   const DB_PORT = parseInt(process.env.DB_PORT || '3306', 10);
-  const isCloud = (DB_HOST && DB_HOST !== 'localhost' && DB_HOST !== '127.0.0.1') || DATABASE_URL.includes('aivencloud.com');
+  const isCloud = (DB_HOST && DB_HOST !== 'localhost' && DB_HOST !== '127.0.0.1') || DATABASE_URL.includes('aivencloud.com') || DATABASE_URL.includes('tidbcloud.com');
 
-  // Priority 1: Cloud MySQL via DATABASE_URL or remote host (Aiven)
+  // Priority 1: Cloud MySQL via DATABASE_URL or remote host (Aiven / TiDB)
   if (DATABASE_URL || isCloud) {
     if (DATABASE_URL) {
       console.log('Connecting to Cloud MySQL via DATABASE_URL...');
@@ -29,6 +29,7 @@ async function initDatabase() {
         dialectOptions: {
           ssl: {
             require: true,
+            minVersion: 'TLSv1.2',
             rejectUnauthorized: false
           }
         },
@@ -50,6 +51,7 @@ async function initDatabase() {
         dialectOptions: {
           ssl: {
             require: true,
+            minVersion: 'TLSv1.2',
             rejectUnauthorized: false
           }
         },
